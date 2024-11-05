@@ -1,0 +1,16 @@
+{
+  "name": "@lightweight-sdk/web-component",
+  "version": "0.0.1",
+  "description": "A lightweight library to build web components easily",
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "keywords": [],
+  "author": "kyuno",
+  "license": "ISC"
+}
