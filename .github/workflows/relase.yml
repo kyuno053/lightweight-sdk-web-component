@@ -1,0 +1,46 @@
+name: Package TypeScript Library with pnpm
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # 2. Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '22'  # Utilise une version de Node.js compatible avec ton projet
+
+      # 3. Install pnpm
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      # 4. Install dependencies using pnpm
+      - name: Install dependencies
+        run: pnpm install
+
+      # 5. Compile TypeScript
+      - name: Compile TypeScript
+        run: pnpm run build  # Assure-toi que cette commande compile ton projet
+
+      # 6. Package the library with pnpm pack
+      - name: Create package
+        run: pnpm pack
+        # Cette commande crée un fichier .tgz dans le dossier courant avec ta librairie packagée
+
+      # 7. Upload the package as a release asset
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./*.tgz
+          asset_name: package_${{ github.event.release.tag_name }}.tgz
+          asset_content_type: application/gzip
