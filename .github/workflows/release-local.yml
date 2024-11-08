@@ -1,0 +1,62 @@
+name: Release
+
+# Déclenchement du workflow à chaque création de tag
+on:
+  push:
+    tags:
+      - 'v*'  # Déclenche pour chaque tag commençant par 'v' (ex: v1.0.0)
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Étape 1: Vérifier le code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Étape 2: Installer Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'  # Remplace par la version Node.js souhaitée
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 7
+          run_install: |
+            - recursive: true
+            - args: [--global, rimraf, typescript]
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      # Étape 4: Lancer la compilation
+      - name: Build
+        run: pnpm build
+
+      # Étape 5: Créer une release sur GitHub
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}  # Utilise le tag actuel comme nom de la release
+          release_name: "Release ${{ github.ref_name }}"
+          body: "Automated release for version ${{ github.ref_name }}"
+          draft: false
+          prerelease: false
