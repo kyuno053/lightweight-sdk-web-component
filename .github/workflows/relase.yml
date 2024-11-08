@@ -2,7 +2,7 @@ name: Package TypeScript Library with pnpm
 
 on:
   release:
-    types: [published]
+    types: [created]
 
 jobs:
   build:
