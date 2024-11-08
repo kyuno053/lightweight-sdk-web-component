@@ -45,6 +45,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./*.tgz
+          asset_path: $(find . -name "*.tgz")
           asset_name: package_${{ github.event.release.tag_name }}.tgz
           asset_content_type: application/gzip
