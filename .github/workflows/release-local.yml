@@ -1,6 +1,5 @@
 name: Release
 
-# Déclenchement du workflow à chaque création de tag
 on:
   push:
     tags:
@@ -15,41 +14,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Étape 2: Installer Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'  # Remplace par la version Node.js souhaitée
-
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        with:
-          version: 7
-          run_install: |
-            - recursive: true
-            - args: [--global, rimraf, typescript]
-
-      - name: Get pnpm store directory
-        shell: bash
+      # Étape 2: Installer pnpm
+      - name: Install pnpm
         run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+          npm install -g pnpm  # Installe pnpm globalement
 
-      - uses: actions/cache@v3
-        name: Setup pnpm cache
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
+      # Étape 3: Installer les dépendances avec pnpm
       - name: Install dependencies
         run: pnpm install
 
-      # Étape 4: Lancer la compilation
-      - name: Build
-        run: pnpm build
+      # Étape 4: Construire la librairie avec pnpm
+      - name: Build library
+        run: pnpm run build  # Remplace par ton script de build si nécessaire
 
-      # Étape 5: Créer une release sur GitHub
+      # Étape 5: Lancer les tests avec pnpm
+      - name: Run tests
+        run: pnpm test
+
+      # Étape 6: Créer une release GitHub
       - name: Create GitHub Release
         uses: actions/create-release@v1
         env:
@@ -60,3 +42,14 @@ jobs:
           body: "Automated release for version ${{ github.ref_name }}"
           draft: false
           prerelease: false
+
+      # Étape 7: Ajouter les fichiers de build à la release
+      - name: Upload build assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ./dist  # Remplace par le dossier où sont générés tes fichiers buildés
+          asset_name: "build-${{ github.ref_name }}.zip"
+          asset_content_type: application/zip
