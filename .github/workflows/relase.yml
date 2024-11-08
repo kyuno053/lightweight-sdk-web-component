@@ -34,9 +34,13 @@ jobs:
       # 6. Package the library with pnpm pack
       - name: Create package
         run: pnpm pack
-        # Cette commande crée un fichier .tgz dans le dossier courant avec ta librairie packagée
 
-      # 7. Upload the package as a release asset
+      # 7. Check generated files
+      - name: List files in the workspace
+        run: ls -la
+
+
+      # 8. Upload the package as a release asset
       - name: Upload release asset
         uses: actions/upload-release-asset@v1
         with:
