@@ -18,6 +18,5 @@ export default tseslint.config(
     }
   },
   ...tseslint.configs.strict,
-  ...tseslint.configs.stylistic,
   jsdoc.configs['flat/recommended-typescript']
 );
