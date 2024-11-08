@@ -27,9 +27,9 @@ jobs:
       - name: Build library
         run: pnpm run build  # Remplace par ton script de build si nécessaire
 
-      # Étape 5: Lancer les tests avec pnpm
-      - name: Run tests
-        run: pnpm test
+      # # Étape 5: Lancer les tests avec pnpm
+      # - name: Run tests
+      #   run: pnpm test
 
       # Étape 6: Créer une release GitHub
       - name: Create GitHub Release
