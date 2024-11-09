@@ -39,18 +39,12 @@ jobs:
       - name: List files in the workspace
         run: ls -la
 
-      - name: Get Name of Artifact
-        run: |
-          ARTIFACT_PATHNAME=$(ls *.tgz | head -n 1)
-          ARTIFACT_NAME=$(basename $ARTIFACT_PATHNAME)
-          echo ::set-env name=ARTIFACT_NAME::${ARTIFACT_NAME}
-          echo ::set-env name=ARTIFACT_PATHNAME::${ARTIFACT_PATHNAME}
 
       # 8. Upload the package as a release asset
       - name: Upload release asset
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ env.ARTIFACT_PATHNAME }}
-          asset_name: ${{ env.ARTIFACT_NAME }}
+          asset_path: ./lightweight-sdk-web-component-*.*.*.tgz
+          asset_name: package_${{ github.event.release.tag_name }}.tgz
           asset_content_type: application/gzip
