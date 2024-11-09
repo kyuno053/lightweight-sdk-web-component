@@ -37,7 +37,7 @@ jobs:
 
       # 7. Check generated files
       - name: List files in the workspace
-        run: ls -la
+        run: ls -la | grep *.tgz
 
 
       # 8. Upload the package as a release asset
@@ -45,6 +45,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./lightweight-sdk-web-component-*.*.*.tgz
-          asset_name: package_${{ github.event.release.tag_name }}.tgz
+          asset_path: ./
+          asset_name: ${{github.event.repository.name}}${{ github.event.release.tag_name }}.tgz
           asset_content_type: application/gzip
