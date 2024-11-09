@@ -35,29 +35,20 @@ jobs:
       - name: Create package
         run: pnpm pack
 
-      # 8. Upload artifact
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{github.event.repository.name}}${{ github.event.release.tag_name }}
-          path: ./*.tgz
-    
-      # 9. Download artifact
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{github.event.repository.name}}${{ github.event.release.tag_name }}
-          path: release
 
       # 7. Check generated files
       - name: List files in the workspace
         run: ls -la && cd release && ls -ls
-
-      # 8. Upload the package as a release asset
+     
+      # 8. Rename generated files
+      - name: Rename packed package in the workspace
+        run: find ./ -name *.tgz -exec mv {} package.tgz \; 
+        
+      # 9. Upload the package as a release asset
       - name: Upload release asset
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: release/*.tgz
+          asset_path: package.tgz
           asset_name: ${{github.event.repository.name}}${{ github.event.release.tag_name }}.tgz
           asset_content_type: application/gzip
