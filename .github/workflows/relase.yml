@@ -38,7 +38,7 @@ jobs:
 
       # 7. Check generated files
       - name: List files in the workspace
-        run: ls -la && cd release && ls -ls
+        run: ls -la
      
       # 8. Rename generated files
       - name: Rename packed package in the workspace
