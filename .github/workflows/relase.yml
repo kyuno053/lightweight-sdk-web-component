@@ -47,6 +47,8 @@ jobs:
       # 9. Upload the package as a release asset
       - name: Upload release asset
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: package.tgz
