@@ -51,7 +51,7 @@ jobs:
 
       # 7. Check generated files
       - name: List files in the workspace
-        run: ls -la
+        run: ls -la & cd release && ls -ls
 
       # 8. Upload the package as a release asset
       - name: Upload release asset
