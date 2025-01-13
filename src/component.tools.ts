@@ -58,11 +58,13 @@ export function CustomComponent<T extends ConstructorFunction<AbstractComponent>
             }
 
             // Apply any specified CSS classes to the component root element
-            this.classList.add(...p.cssClasses);
+            if (p.cssClasses) {
+                this.classList.add(...p.cssClasses);
+            }
 
             // Process and link properties specified in __linkedProperties to their DOM elements
             for (const requested of this.__linkedProperties ?? []) {
-                const elt = findRefElement(requested.ref);
+                const elt = findRefElement(requested.ref, this);
                 if (elt == null) {
                     throw new Error(`ref ${requested.ref} not found`);
                 }
