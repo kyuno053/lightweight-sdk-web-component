@@ -21,5 +21,6 @@ export function findRefElement(ref: string, parent?: HTMLElement): HTMLElement |
  * @returns the template as a string
  */
 export function parseModuleToHtml(mod: any): string {
+    if (mod == null) return "";
     return "default" in mod ? mod.default as string : "";
 }
